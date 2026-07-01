@@ -1,0 +1,11 @@
+.next
+node_modules
+.data
+test-results
+playwright-report
+.env
+.env.local
+.env.production
+.git
+.gitignore
+*.log
