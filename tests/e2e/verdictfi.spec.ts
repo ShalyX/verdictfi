@@ -25,6 +25,7 @@ test("onboarding explains the flow and can enter the desk", async ({ page }) => 
 test("dashboard generates a persisted public packet", async ({ page }) => {
   await page.goto("/desk");
   await expect(page.getByRole("heading", { name: /run the desk/i })).toBeVisible();
+  await expect(page.getByText(/SoDEX submission remains intentionally gated/i)).toHaveCount(0);
   await expect(page.getByText(/Evidence Packet/i).first()).toBeVisible();
 
   await page.getByLabel("Notional USD").fill("3000");

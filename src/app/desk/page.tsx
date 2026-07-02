@@ -209,7 +209,7 @@ export default function Home() {
       </div>
 
       <footer className="bg-charcoal px-5 py-8 text-center text-sm text-paper/68">
-        VerdictFi — built for the SoSoValue WaveHack. Live market data feeds evidence packets; SoDEX submission remains intentionally gated until verified.
+        VerdictFi — built for the SoSoValue WaveHack. Live market data feeds evidence packets; approved SoDEX testnet cases submit when endpoint credentials are configured.
       </footer>
     </main>
   );
