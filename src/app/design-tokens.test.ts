@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
@@ -20,9 +20,13 @@ describe("VerdictFi case-file redesign tokens", () => {
   });
 
   it("removes generic fintech dashboard defaults from app surfaces", () => {
-    const page = read("src/app/page.tsx");
-    const publicPacket = read("src/app/packets/[id]/page.tsx");
-    const combined = `${page}\n${publicPacket}`;
+    const files = [
+      "src/app/page.tsx",
+      "src/app/desk/page.tsx",
+      "src/app/track-record/page.tsx",
+      "src/app/packets/[id]/page.tsx",
+    ];
+    const combined = files.filter((file) => existsSync(path.join(root, file))).map(read).join("\n");
 
     expect(combined).not.toContain("bg-[#050816]");
     expect(combined).not.toContain("rounded-full");
@@ -30,5 +34,22 @@ describe("VerdictFi case-file redesign tokens", () => {
     expect(combined).toContain("Case file");
     expect(combined).toContain("Case log");
     expect(combined).toContain("stamp");
+  });
+
+  it("keeps landing, onboarding, dashboard, packet, and track-record as distinct routes", () => {
+    for (const file of [
+      "src/app/page.tsx",
+      "src/app/onboarding/page.tsx",
+      "src/app/desk/page.tsx",
+      "src/app/packets/[id]/page.tsx",
+      "src/app/track-record/page.tsx",
+    ]) {
+      expect(existsSync(path.join(root, file)), `${file} should exist`).toBe(true);
+    }
+
+    const landing = read("src/app/page.tsx");
+    expect(landing).toContain("Enter the desk");
+    expect(landing).not.toContain("/api/run");
+    expect(landing).not.toContain("Generate accountable signal");
   });
 });
