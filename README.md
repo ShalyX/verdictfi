@@ -15,7 +15,6 @@ Built for the SoSoValue AKINDO WaveHack.
 
 ## Why it is different
 
-Most submissions follow: `AI signal → trade`.
 
 VerdictFi follows: `AI thesis → risk challenge → evidence packet → gated SoDEX testnet execution → outcome accountability`.
 
