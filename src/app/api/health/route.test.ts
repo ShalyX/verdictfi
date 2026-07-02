@@ -1,9 +1,15 @@
-import { describe, expect, it } from "vitest";
-import { GET } from "./route";
+import { mkdtempSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { describe, expect, it, vi } from "vitest";
 
 describe("GET /api/health", () => {
   it("returns production readiness status without leaking secrets", async () => {
+    vi.resetModules();
     process.env["SOSOVALUE_API_KEY"] = "test-secret-value";
+    process.env["VERDICTFI_DB_PATH"] = path.join(mkdtempSync(path.join(os.tmpdir(), "verdictfi-health-")), "health.sqlite");
+
+    const { GET } = await import("./route");
     const response = await GET();
     const body = await response.json();
 
