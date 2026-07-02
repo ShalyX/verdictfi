@@ -99,8 +99,10 @@ async function getJson(path: string, params: Record<string, string | number | un
   throw new Error(`${path} failed after ${attempts} attempts`);
 }
 
+const DEMO_TIMESTAMP = "2026-01-01T00:00:00.000Z";
+
 function demoSnapshot(asset: AssetSymbol, label = "SoSoValue demo adapter"): MarketSnapshot {
-  const now = new Date().toISOString();
+  const now = DEMO_TIMESTAMP;
   const item = symbolFallback[asset];
   return {
     asset,

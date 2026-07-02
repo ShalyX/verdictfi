@@ -145,7 +145,7 @@ export function challengeThesis(market: MarketSnapshot, thesis: AnalystThesis, n
 export function executeOnSodexTestnet(asset: AssetSymbol, thesis: AnalystThesis, risk: RiskChallenge, notionalUsd: number): ExecutionRecord {
   const side = thesis.direction === "long" ? "buy" : thesis.direction === "short" ? "sell" : "none";
   const blocked = risk.verdict === "rejected" || side === "none";
-  const id = `sodex-testnet-${hashId(`${asset}-${side}-${notionalUsd}-${new Date().toISOString().slice(0, 13)}`)}`;
+  const id = `sodex-testnet-${hashId(`${asset}-${side}-${notionalUsd}`)}`;
   const credentialsConfigured = Boolean(process.env["SODEX_TESTNET_API_KEY"] && process.env["SODEX_TESTNET_PRIVATE_KEY"]);
 
   return {

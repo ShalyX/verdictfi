@@ -3,6 +3,10 @@ import { expect, test } from "@playwright/test";
 test("judge flow generates a persisted public packet", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /one-person finance desk/i })).toBeVisible();
+  await expect(page.getByText(/Case file/i).first()).toBeVisible();
+  await expect(page.getByText(/Evidence Packet/i).first()).toBeVisible();
+  await expect(page.getByText(/Case timeline/i)).toBeVisible();
+  await expect(page.getByText(/Case log/i)).toBeVisible();
 
   await page.getByLabel("Notional USD").fill("3000");
   await page.getByRole("button", { name: /generate accountable signal/i }).click();
@@ -12,5 +16,6 @@ test("judge flow generates a persisted public packet", async ({ page }) => {
 
   await page.getByRole("link", { name: /public packet/i }).click();
   await expect(page.getByRole("heading", { name: /BTC · (LONG|SHORT|HOLD) verdict/i })).toBeVisible();
+  await expect(page.getByText(/Public case file/i)).toBeVisible();
   await expect(page.getByText(/Raw packet JSON/i)).toBeVisible();
 });

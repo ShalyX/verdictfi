@@ -31,6 +31,18 @@ describe("VerdictFi core engine", () => {
     expect(execution.orderId).toBe("not-submitted-risk-gate");
   });
 
+  it("uses a stable demo timestamp for SSR-safe sample packets", () => {
+    expect(buildDemoMarketSnapshot("BTC").timestamp).toBe("2026-01-01T00:00:00.000Z");
+  });
+
+  it("uses stable SoDEX preparation IDs for demo hydration", () => {
+    const market = buildDemoMarketSnapshot("BTC");
+    const thesis = generateAnalystThesis(market);
+    const risk = challengeThesis(market, thesis, 1000);
+
+    expect(executeOnSodexTestnet("BTC", thesis, risk, 1000).orderId).toBe("sodex-testnet-4f2a3839");
+  });
+
   it("creates a complete evidence packet", () => {
     const packet = createEvidencePacket({ asset: "ETH", notionalUsd: 750, riskMode: "balanced" });
 

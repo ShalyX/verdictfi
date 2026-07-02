@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const fraunces = Fraunces({ variable: "--font-display", subsets: ["latin"], axes: ["SOFT", "WONK", "opsz"] });
+const inter = Inter({ variable: "--font-body", subsets: ["latin"] });
+const ibmPlexMono = IBM_Plex_Mono({ variable: "--font-evidence", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  title: "VerdictFi — Accountable AI Finance Desk",
-  description: "SoSoValue-powered finance desk with analyst thesis, risk challenge, evidence packet, SoDEX testnet adapter, and outcome tracking.",
-  keywords: ["SoSoValue", "SoDEX", "AI finance", "risk agent", "on-chain finance", "WaveHack"],
+  title: "VerdictFi — Evidence-Led AI Market Verdicts",
+  description: "A case-file style finance agent that turns SoSoValue market data into risk-checked evidence packets and outcome logs.",
+  keywords: ["SoSoValue", "SoDEX", "AI finance", "evidence packet", "risk verdict", "WaveHack"],
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${fraunces.variable} ${inter.variable} ${ibmPlexMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
