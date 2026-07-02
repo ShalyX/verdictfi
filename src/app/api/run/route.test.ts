@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { resetRateLimiterForTests } from "@/lib/rate-limit";
 import { GET, POST } from "./route";
 
@@ -8,6 +8,11 @@ describe("/api/run", () => {
     delete process.env["VERDICTFI_RATE_LIMIT_MAX"];
     delete process.env["VERDICTFI_RATE_LIMIT_WINDOW_MS"];
     delete process.env["VERDICTFI_TRUST_PROXY_HEADERS"];
+    delete process.env["SODEX_TESTNET_API_KEY"];
+    delete process.env["SODEX_TESTNET_PRIVATE_KEY"];
+    delete process.env["SODEX_TESTNET_SUBMIT_URL"];
+    delete process.env["SODEX_TESTNET_SUBMIT_ENABLED"];
+    vi.restoreAllMocks();
   });
 
   it("rejects side-effecting GET packet generation", async () => {
@@ -88,20 +93,30 @@ describe("/api/run", () => {
     expect(responseBody.error).toBe("rate_limited");
   });
 
-  it("returns and persists a valid packet without claiming unimplemented SoDEX submission", async () => {
+  it("submits approved SoDEX testnet orders when the submit gate and endpoint are configured", async () => {
+    process.env["SODEX_TESTNET_SUBMIT_ENABLED"] = "true";
+    process.env["SODEX_TESTNET_SUBMIT_URL"] = "https://sodex.testnet.example/orders";
     process.env["SODEX_TESTNET_API_KEY"] = "configured";
     process.env["SODEX_TESTNET_PRIVATE_KEY"] = "configured";
-    const request = new Request("http://localhost/api/run", {
-      method: "POST",
-      body: JSON.stringify({ asset: "BTC", notionalUsd: 1000, riskMode: "balanced" }),
-    });
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ orderId: "sodex-order-live-123", txHash: "0xtestnetreceipt" }), { status: 200 }),
+    );
 
-    const response = await POST(request);
+    const response = await POST(
+      new Request("http://localhost/api/run", {
+        method: "POST",
+        body: JSON.stringify({ asset: "BTC", notionalUsd: 1000, riskMode: "balanced" }),
+      }),
+    );
     const packet = await response.json();
+
     expect(response.status).toBe(200);
-    expect(packet.asset).toBe("BTC");
-    expect(packet.adapter.provider).toBe("SoSoValue");
-    expect(packet.execution.status).toMatch(/prepared|blocked/);
-    expect(packet.execution.status).not.toBe("submitted");
+    expect(packet.execution.status).toBe("submitted");
+    expect(packet.execution.orderId).toBe("sodex-order-live-123");
+    expect(packet.execution.note).toMatch(/submitted to SoDEX testnet/i);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://sodex.testnet.example/orders",
+      expect.objectContaining({ method: "POST" }),
+    );
   });
 });

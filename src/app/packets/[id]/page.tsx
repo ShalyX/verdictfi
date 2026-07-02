@@ -86,7 +86,7 @@ export default async function PacketPage({ params }: PageProps) {
             <Stamp tone={packet.execution.status === "blocked" ? "reject" : "brass"}>{packet.execution.status}</Stamp>
           </div>
           <div className="evidence-tag">
-            <p className="font-evidence text-[0.62rem] uppercase tracking-[0.22em] text-ink/60">SODEX-PREP HASH</p>
+            <p className="font-evidence text-[0.62rem] uppercase tracking-[0.22em] text-ink/60">SODEX ORDER TAG</p>
             <p className="mt-1 break-all font-evidence text-sm font-semibold text-ink">{packet.execution.orderId}</p>
           </div>
         </section>

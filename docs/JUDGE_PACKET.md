@@ -12,7 +12,7 @@ Crypto traders do not just need another signal. They need to know:
 - why the agent believes it,
 - what could make it wrong,
 - whether the risk desk approves it,
-- whether execution was blocked or prepared,
+- whether execution was blocked, prepared, or submitted on testnet,
 - whether the call worked later.
 
 ## Demo path
@@ -31,9 +31,9 @@ Crypto traders do not just need another signal. They need to know:
 - **User Value & Practical Impact (30%)**: focuses on decision quality and post-signal accountability, not generic alerts.
 - **Functionality & Working Demo (25%)**: full local dashboard + API routes + deterministic demo packet generation.
 - **Logic, Workflow & Product Design (20%)**: explicit data → thesis → challenge → evidence → execution gate → outcome pipeline.
-- **Data/API Integration (15%)**: SoSoValue live-data adapter and SoDEX preparation adapter are isolated so venue submission can be added without changing the product flow.
+- **Data/API Integration (15%)**: SoSoValue live-data adapter and SoDEX testnet submit adapter are isolated so venue failures degrade to `prepared` without changing the product flow.
 - **UX & Clarity (10%)**: judge-readable dashboard with visible verdicts, risks, execution status, and outcomes.
 
 ## Current limitation
 
-Live SoSoValue mode requires an API key. Live SoDEX order submission is intentionally disabled until a verified submit adapter, key-management controls, and compliance review are complete. The app clearly labels execution as `prepared` or `blocked`, not fake-submitted.
+Live SoSoValue mode requires an API key. SoDEX testnet submission requires `SODEX_TESTNET_SUBMIT_ENABLED=true`, credentials, and a submit endpoint. If the endpoint is missing or fails, the app clearly labels execution as `prepared` or `blocked`, not fake-submitted.

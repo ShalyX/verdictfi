@@ -6,7 +6,7 @@ VerdictFi
 
 ## Short description
 
-A one-person finance desk where every AI market call is explainable, risk-checked, prepared for SoDEX testnet execution, and outcome-tracked after the fact.
+A one-person finance desk where every AI market call is explainable, risk-checked, submitted or prepared on SoDEX testnet, and outcome-tracked after the fact.
 
 ## Target users
 
@@ -22,13 +22,13 @@ VerdictFi turns SoSoValue-style market intelligence into a complete accountable 
 2. Analyst agent generates a thesis, direction, confidence, drivers, horizon, and invalidation rule.
 3. Risk agent challenges the thesis against volatility, conflicting data, and sizing constraints.
 4. Evidence packet records source data, analyst reasoning, risk objections, required controls, execution status, and outcome status.
-5. SoDEX testnet adapter prepares execution records only when the risk gate allows it; automatic submission remains gated until a verified submit adapter is enabled.
+5. SoDEX testnet adapter submits approved/cautioned cases when the testnet submit endpoint is configured; otherwise it keeps a retryable prepared record.
 6. Outcome tracker scores whether the call was correct, wrong, neutral, or avoided-loss.
 
 ## APIs / data sources
 
 - SoSoValue API adapter for market/news/ETF-flow style data.
-- SoDEX testnet adapter for execution preparation/gating.
+- SoDEX testnet adapter for execution preparation, gating, and configurable testnet submission.
 - Deterministic demo fallback when buildathon credentials are not present.
 
 ## Why it matters
@@ -37,7 +37,7 @@ Most AI trading apps stop at `signal → trade`. VerdictFi adds the missing acco
 
 ## Demo notes
 
-The current demo works without secrets. If a SoSoValue key is provided, market data switches to live mode. SoDEX execution remains `prepared`/`blocked` until a verified submit adapter is enabled, so the app never fake-submits.
+The current demo works without secrets. If a SoSoValue key is provided, market data switches to live mode. If SoDEX testnet submit credentials and endpoint are configured, risk-approved/cautioned cases can return `submitted`; otherwise they remain `prepared`/`blocked` without fake-submission claims.
 
 ## Suggested tagline
 

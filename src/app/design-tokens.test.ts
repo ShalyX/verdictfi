@@ -14,9 +14,9 @@ describe("VerdictFi case-file redesign tokens", () => {
       expect(globals).toContain(hex);
     }
 
-    expect(layout).toContain("Fraunces");
-    expect(layout).toContain("IBM_Plex_Mono");
-    expect(layout).toContain("Inter");
+    expect(layout).toContain("Newsreader");
+    expect(layout).toContain("Public_Sans");
+    expect(layout).toContain("Space_Mono");
   });
 
   it("removes generic fintech dashboard defaults from app surfaces", () => {

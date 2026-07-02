@@ -21,9 +21,9 @@ Move VerdictFi away from dark fintech-dashboard defaults and into an evidence-an
 - `--approved-fade: rgba(47, 93, 58, 0.1)` — approved stamp tint.
 
 ### Typography
-- Display: `Fraunces` via `next/font/google`, variable `--font-display`.
-- Body: `Inter` via `next/font/google`, variable `--font-body`.
-- Evidence/data: `IBM Plex Mono` via `next/font/google`, variable `--font-evidence`.
+- Display: `Newsreader` via `next/font/google`, variable `--font-display`; editorial/case-file gravity without the familiar Claude-artifact Fraunces feel.
+- Body: `Public Sans` via `next/font/google`, variable `--font-body`; government-document clarity, less generic SaaS than Inter.
+- Evidence/data: `Space Mono`, variable `--font-evidence`; stamped evidence tags with a distinct archival/technical texture.
 
 ## Layout plan
 
@@ -40,7 +40,7 @@ Move VerdictFi away from dark fintech-dashboard defaults and into an evidence-an
   - reject red / approved green / brass for caution/prepared
   - no `rounded-full` styling
 - Format SoDEX order id as an evidence tag:
-  - mono label `EVIDENCE TAG / SODEX-PREP`
+  - mono label `EVIDENCE TAG / SODEX-ORDER`
   - perforated left edge or ruled label styling
   - break-all mono value
 
@@ -70,11 +70,11 @@ Must remove/fix:
 - Dark navy/cyan fintech palette: **replace all primary page dark/cyan surfaces with paper/ink/brass/charcoal.**
 - Pill status badges: **remove `rounded-full` badges; statuses become stamped verdict blocks or evidence tags.**
 - Uniform rounded grid cards: **introduce folder tabs, ruled ledger rows, stamps, dossier panels, and case timeline.**
-- Generic sans: **Fraunces headlines + IBM Plex Mono labels/data + Inter body.**
+- Generic sans: **Newsreader headlines + Space Mono labels/data + Public Sans body.**
 - Trading terminal vibe: **rename sections toward evidence, case file, audit trail, case log; no leaderboard framing.**
 
 ## Files to change
-- `src/app/layout.tsx` — load Fraunces, Inter, IBM Plex Mono; update metadata if needed.
+- `src/app/layout.tsx` — load Newsreader, Public Sans, Space Mono; update metadata if needed.
 - `src/app/globals.css` — design tokens, paper texture, stamp/evidence utility classes.
 - `src/app/page.tsx` — redesign dashboard into case intake + dossier + case timeline + case log.
 - `src/app/packets/[id]/page.tsx` — redesign public packet page.
@@ -90,7 +90,7 @@ Must remove/fix:
 
 ## Brief compliance check
 - Palette exact? planned exact values: yes.
-- Typography exact? Fraunces / IBM Plex Mono / Inter planned: yes.
+- Typography exact? Newsreader / Space Mono / Public Sans planned: yes.
 - Evidence packet as signature element? yes, dossier + folder tab + stamp.
 - Kill pill badges? yes, stamp/evidence-tag components only.
 - Kill uniform card grid? yes, mixed dossier/timeline/ledger structures.

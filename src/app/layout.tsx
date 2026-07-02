@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Mono, Inter } from "next/font/google";
+import { Newsreader, Public_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({ variable: "--font-display", subsets: ["latin"], axes: ["SOFT", "WONK", "opsz"] });
-const inter = Inter({ variable: "--font-body", subsets: ["latin"] });
-const ibmPlexMono = IBM_Plex_Mono({ variable: "--font-evidence", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const newsreader = Newsreader({ variable: "--font-display", subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const publicSans = Public_Sans({ variable: "--font-body", subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const spaceMono = Space_Mono({ variable: "--font-evidence", subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = {
   title: "VerdictFi — Evidence-Led AI Market Verdicts",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${inter.variable} ${ibmPlexMono.variable} h-full antialiased`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${newsreader.variable} ${publicSans.variable} ${spaceMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

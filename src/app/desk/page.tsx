@@ -113,7 +113,7 @@ function PacketDossier({ packet, saved = false }: { packet: EvidencePacket; save
           </div>
           <p className="mt-4 text-sm leading-6 text-ink/75">{packet.execution.note}</p>
           <div className="mt-4">
-            <EvidenceTag label="EVIDENCE TAG / SODEX-PREP" value={packet.execution.orderId} />
+            <EvidenceTag label="EVIDENCE TAG / SODEX-ORDER" value={packet.execution.orderId} />
           </div>
         </section>
       </div>

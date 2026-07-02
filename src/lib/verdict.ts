@@ -45,6 +45,7 @@ export type ExecutionRecord = {
   asset: AssetSymbol;
   notionalUsd: number;
   note: string;
+  txHash?: string;
 };
 
 export type OutcomeRecord = {
@@ -142,11 +143,13 @@ export function challengeThesis(market: MarketSnapshot, thesis: AnalystThesis, n
   return { verdict, riskScore, objections: objections.length ? objections : ["No blocking objection found."], requiredControls };
 }
 
-export function executeOnSodexTestnet(asset: AssetSymbol, thesis: AnalystThesis, risk: RiskChallenge, notionalUsd: number): ExecutionRecord {
+function buildPreparedSodexRecord(asset: AssetSymbol, thesis: AnalystThesis, risk: RiskChallenge, notionalUsd: number): ExecutionRecord {
   const side = thesis.direction === "long" ? "buy" : thesis.direction === "short" ? "sell" : "none";
   const blocked = risk.verdict === "rejected" || side === "none";
   const id = `sodex-testnet-${hashId(`${asset}-${side}-${notionalUsd}`)}`;
   const credentialsConfigured = Boolean(process.env["SODEX_TESTNET_API_KEY"] && process.env["SODEX_TESTNET_PRIVATE_KEY"]);
+  const submitEnabled = process.env["SODEX_TESTNET_SUBMIT_ENABLED"] === "true";
+  const submitUrl = process.env["SODEX_TESTNET_SUBMIT_URL"];
 
   return {
     venue: "SoDEX testnet adapter",
@@ -157,10 +160,62 @@ export function executeOnSodexTestnet(asset: AssetSymbol, thesis: AnalystThesis,
     notionalUsd: blocked ? 0 : notionalUsd,
     note: blocked
       ? "Risk gate blocked execution."
-      : credentialsConfigured
-        ? "SoDEX testnet credentials are configured, but automatic submission remains disabled until the submit adapter is implemented and verified."
-        : "No SoDEX testnet credentials present; generated deterministic signed-order-ready testnet record for demo mode.",
+      : submitEnabled && credentialsConfigured && !submitUrl
+        ? "SoDEX testnet submission is enabled, but no SODEX_TESTNET_SUBMIT_URL is configured; kept as prepared."
+        : credentialsConfigured
+          ? "SoDEX testnet credentials are configured; order is prepared for testnet submission."
+          : "No SoDEX testnet credentials present; generated deterministic signed-order-ready testnet record for demo mode.",
   };
+}
+
+export function executeOnSodexTestnet(asset: AssetSymbol, thesis: AnalystThesis, risk: RiskChallenge, notionalUsd: number): ExecutionRecord {
+  return buildPreparedSodexRecord(asset, thesis, risk, notionalUsd);
+}
+
+export async function submitToSodexTestnet(asset: AssetSymbol, thesis: AnalystThesis, risk: RiskChallenge, notionalUsd: number): Promise<ExecutionRecord> {
+  const prepared = buildPreparedSodexRecord(asset, thesis, risk, notionalUsd);
+  if (prepared.status === "blocked") return prepared;
+
+  const submitEnabled = process.env["SODEX_TESTNET_SUBMIT_ENABLED"] === "true";
+  const submitUrl = process.env["SODEX_TESTNET_SUBMIT_URL"];
+  const apiKey = process.env["SODEX_TESTNET_API_KEY"];
+  const privateKey = process.env["SODEX_TESTNET_PRIVATE_KEY"];
+  if (!submitEnabled || !submitUrl || !apiKey || !privateKey) return prepared;
+
+  try {
+    const response = await fetch(submitUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        clientOrderId: prepared.orderId,
+        asset,
+        side: prepared.side,
+        notionalUsd,
+        riskVerdict: risk.verdict,
+        confidence: thesis.confidence,
+        thesis: thesis.thesis,
+        signatureMaterial: hashId(`${prepared.orderId}-${privateKey.slice(0, 8)}`),
+      }),
+    });
+    if (!response.ok) {
+      return { ...prepared, note: `SoDEX testnet submit endpoint returned ${response.status}; kept prepared for retry.` };
+    }
+    const receipt = (await response.json().catch(() => ({}))) as { orderId?: string; id?: string; txHash?: string; hash?: string };
+    const orderId = receipt.orderId ?? receipt.id ?? prepared.orderId;
+    const txHash = receipt.txHash ?? receipt.hash;
+    return {
+      ...prepared,
+      status: "submitted",
+      orderId,
+      txHash,
+      note: `Submitted to SoDEX testnet${txHash ? ` with receipt ${txHash}` : ""}.`,
+    };
+  } catch {
+    return { ...prepared, note: "SoDEX testnet submit attempt failed; kept prepared for retry." };
+  }
 }
 
 export function checkOutcome(market: MarketSnapshot, thesis: AnalystThesis): OutcomeRecord {
@@ -213,7 +268,7 @@ export async function createEvidencePacketWithLiveData(input: { asset: AssetSymb
   const market = adapter.snapshot ?? buildMarketSnapshot(input.asset);
   const analyst = generateAnalystThesis(market);
   const risk = challengeThesis(market, analyst, input.notionalUsd);
-  const execution = executeOnSodexTestnet(input.asset, analyst, risk, input.notionalUsd);
+  const execution = await submitToSodexTestnet(input.asset, analyst, risk, input.notionalUsd);
   const outcome = checkOutcome(market, analyst);
   const id = `vf-${hashId(JSON.stringify({ input, t: market.timestamp, mode: adapter.mode }))}`;
 

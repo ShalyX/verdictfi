@@ -6,7 +6,7 @@ Most AI trading dashboards give a signal and ask users to trust it. VerdictFi tr
 
 ## 0:15 — Product
 
-VerdictFi is a one-person finance desk powered by SoSoValue market intelligence and a SoDEX testnet preparation adapter.
+VerdictFi is a one-person finance desk powered by SoSoValue market intelligence and a SoDEX testnet execution adapter.
 
 ## 0:25 — Run the desk
 
@@ -26,7 +26,7 @@ VerdictFi records the source fields, timestamps, thesis, risk objections, contro
 
 ## 1:35 — SoDEX and outcome
 
-If the risk gate approves, the SoDEX testnet adapter prepares the order record. Submission stays intentionally gated until a verified submit adapter is enabled. Later, the outcome tracker scores whether the call was correct, wrong, neutral, or avoided a loss.
+If the risk gate approves, the SoDEX testnet adapter submits when the testnet endpoint is configured; otherwise it keeps a prepared record for retry. Later, the outcome tracker scores whether the call was correct, wrong, neutral, or avoided a loss.
 
 ## 1:55 — Close
 

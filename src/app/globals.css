@@ -43,13 +43,13 @@ body {
     var(--paper);
   background-size: 34px 34px, 34px 34px, auto;
   color: var(--ink);
-  font-family: var(--font-body), Inter, system-ui, sans-serif;
+  font-family: var(--font-body), "Public Sans", system-ui, sans-serif;
 }
 
 ::selection { background: rgba(169, 134, 47, 0.28); }
 
-.font-display { font-family: var(--font-display), Georgia, serif; }
-.font-evidence { font-family: var(--font-evidence), "IBM Plex Mono", monospace; }
+.font-display { font-family: var(--font-display), "Newsreader", Georgia, serif; }
+.font-evidence { font-family: var(--font-evidence), "Space Mono", monospace; }
 
 .case-paper {
   background:

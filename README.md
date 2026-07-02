@@ -10,7 +10,7 @@ Built for the SoSoValue AKINDO WaveHack.
 2. **AI analyst generates thesis** — direction, confidence, drivers, horizon, invalidation rule.
 3. **Risk agent challenges it** — approves, cautions, or rejects based on volatility/conflicts/sizing.
 4. **Evidence packet records everything** — sources, timestamps, thesis, objections, controls, execution status.
-5. **SoDEX testnet adapter** — prepares signed-order-ready records; automatic submission stays disabled until a verified SoDEX submit adapter is implemented.
+5. **SoDEX testnet adapter** — approved/cautioned cases are prepared by default and can be submitted to a configured SoDEX testnet endpoint when `SODEX_TESTNET_SUBMIT_ENABLED=true`.
 6. **Outcome tracker** — checks whether the signal was correct, wrong, neutral, or avoided loss.
 
 ## Why it is different
@@ -58,7 +58,9 @@ Optional live integrations:
 - `SOSOVALUE_API_TIMEOUT_MS` and `SOSOVALUE_API_RETRIES` — live adapter network controls.
 - `VERDICTFI_RATE_LIMIT_MAX` and `VERDICTFI_RATE_LIMIT_WINDOW_MS` — `/api/run` abuse controls.
 - `VERDICTFI_DB_PATH` — SQLite packet store path; use persistent disk in production deployments.
-- `SODEX_TESTNET_API_KEY` and `SODEX_TESTNET_PRIVATE_KEY` — switches SoDEX adapter status from `prepared` to `submitted` for real testnet order submission wiring.
+- `SODEX_TESTNET_API_KEY` and `SODEX_TESTNET_PRIVATE_KEY` — credentials used by the SoDEX testnet submit adapter.
+- `SODEX_TESTNET_SUBMIT_ENABLED` — set to `true` to open testnet submission for risk-approved / caution cases.
+- `SODEX_TESTNET_SUBMIT_URL` — SoDEX testnet order endpoint. If missing or failing, VerdictFi keeps the order `prepared` for retry rather than claiming submission.
 - `OPENAI_API_KEY` — replace deterministic analyst with model-backed thesis generation.
 
 ## Production-readiness controls
@@ -73,6 +75,6 @@ Optional live integrations:
 
 ## Submission positioning
 
-VerdictFi is an accountable AI finance desk powered by SoSoValue and SoDEX. It turns market intelligence into trade theses, forces each thesis through a risk challenge, records a transparent evidence packet, prepares approved calls for SoDEX testnet execution, and tracks whether the agent was right after the fact.
+VerdictFi is an accountable AI finance desk powered by SoSoValue and SoDEX. It turns market intelligence into trade theses, forces each thesis through a risk challenge, records a transparent evidence packet, prepares or submits approved calls on SoDEX testnet depending on configuration, and tracks whether the agent was right after the fact.
 
 For precise production language: VerdictFi is production-ready as a live-data, audited-packet web app; real-capital trading remains intentionally gated until live SoDEX credentials, legal/compliance review, and final key-management controls are enabled.
